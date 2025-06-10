@@ -1,0 +1,11 @@
+{
+  "name": "edge-api",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "type": "module",
+  "dependencies": {
+    "@stomp/stompjs": "^7.0.0",
+    "mqtt": "^5.0.0",
+    "ws": "^8.0.0"
+  }
+}
