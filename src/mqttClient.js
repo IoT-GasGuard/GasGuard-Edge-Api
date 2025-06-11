@@ -19,6 +19,11 @@ client.on("message", (topic, message) => {
 
   try {
     const json = JSON.parse(payload);
+
+    json.deviceId = "ESP32-TEST-001";
+    json.timestamp = new Date().toISOString();
+    json.status = json.ppm > 1.33 ? "ALERTA" : "NORMAL";
+
     sendToSpring(json);
   } catch (err) {
     console.error("Error al parsear JSON:", err);
