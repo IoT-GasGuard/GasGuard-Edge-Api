@@ -88,7 +88,7 @@ client.on("message", (topic, message) => {
           reportId: uuidv4(),
           date: date,
           time: time,
-          device: deviceId,
+          deviceId: deviceId,
           gasLevel: current.peakGasLevel,
           duration: `${durationMin}:${seconds}`,
           actions: protocols,

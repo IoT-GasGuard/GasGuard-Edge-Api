@@ -11,7 +11,7 @@ export async function getDb() {
     CREATE TABLE IF NOT EXISTS reports (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       date TEXT,
-      device TEXT,
+      deviceId TEXT,
       gasLevel REAL,
       duration TEXT,
       actions TEXT,
