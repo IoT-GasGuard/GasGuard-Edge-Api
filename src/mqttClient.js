@@ -1,13 +1,26 @@
 import mqtt from "mqtt";
 import { sendToSpring } from "./stompClient.js";
 import { saveReport } from "./db/saveReport.js";
+import { v4 as uuidv4 } from "uuid";
 
 const brokerUrl = "mqtt://mosquitto:1883";
 const topic = "gg/gas";
+const publishReportsTopic = "gg/reports"
 
 const client = mqtt.connect(brokerUrl);
 
 const activeAlerts = new Map();
+
+function publishReport(report) {
+  client.publish(publishReportsTopic, JSON.stringify(report), { qos: 1 }, (err) => {
+    if (err) {
+      console.error("Error al publicar el reporte: ", err);
+    } else {
+      console.log("Rpeorte publicado en topic:", publishReportsTopic);
+
+    }
+  });
+}
 
 client.on("connect", () => {
   console.log("Conectado a MQTT");
@@ -63,24 +76,34 @@ client.on("message", (topic, message) => {
         const durationMin = Math.floor(durationSec / 60);
         const seconds = durationSec % 60;
 
+        const date = new Date().toLocaleDateString('es-PE', { timeZone: "America/Lima" });
+        const time = new Date().toLocaleTimeString('es-PE', {
+          timeZone: "America/Lima",
+          hour12: false,
+          hour: '2-digit',
+          minute: '2-digit'
+        })
+
         const report = {
-          date: new Date().toLocaleDateString('es-PE', { timeZone: "America/Lima" }),
+          reportId: uuidv4(),
+          date: date,
+          time: time,
           device: deviceId,
           gasLevel: current.peakGasLevel,
           duration: `${durationMin}:${seconds}`,
           actions: protocols,
           resolved: true
         }
-        
-        const reportCopy = {...report}
-        reportCopy.actions=[];
+
+        const reportCopy = { ...report }
+        reportCopy.actions = [];
 
         report.actions.forEach(element => {
           switch (element) {
             case 1:
               reportCopy.actions.push("Windows Opened");
               break;
-          
+
             case 2:
               reportCopy.actions.push("Power Supply Shut Off");
               break;
@@ -93,13 +116,10 @@ client.on("message", (topic, message) => {
               break;
           }
         });
-        console.log("To Local DB");
-        console.log(reportCopy);
         // save to SQLITE local DB
         await saveReport(reportCopy);
-        // POST to backend
-        console.log("To Backend");
-        console.log(report);
+        // publish to reports topic
+        publishReport(report)
         // -------------
 
         activeAlerts.delete(deviceId);
