@@ -1,0 +1,7 @@
+/data/
+
+# dependencies
+/node_modules
+
+# env files
+.env*
