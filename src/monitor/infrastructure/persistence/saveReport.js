@@ -4,10 +4,11 @@ export async function saveReport(report) {
   const db = await getDb();
 
   await db.run(
-    `INSERT INTO reports (date, deviceId, gasLevel, duration, actions, resolved)
-     VALUES (?, ?, ?, ?, ?, ?)`,
+    `INSERT INTO reports (date, time, deviceId, gasLevel, duration, actions, resolved)
+     VALUES (?, ?, ?, ?, ?, ?, ?)`,
     [
       report.date,
+      report.time,
       report.deviceId,
       report.gasLevel,
       report.duration,
