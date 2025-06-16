@@ -1,7 +1,8 @@
 import { Client } from "@stomp/stompjs";
 import { WebSocket } from "ws";
+import { STOMP_TOPICS, WEBSOCKET } from "../config/topics.js";
 
-const springWsUrl = "ws://ggapispring:8080/ws/monitoring";
+const springWsUrl = WEBSOCKET.SPRING_URL;
 
 const client = new Client({
   brokerURL: springWsUrl,
@@ -35,7 +36,7 @@ client.activate();
 
 export function sendToSpring(data) {
   const message = {
-    destination: "/app/gas",
+    destination: STOMP_TOPICS.SEND_TO_BACKEND,
     body: JSON.stringify(data),
   }
 
