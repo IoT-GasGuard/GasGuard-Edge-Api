@@ -2,11 +2,15 @@ import mqtt from "mqtt";
 import { handleMqttMessage } from "../../interface/listeners/mqttGasListeners.js"
 import { MQTT_TOPICS } from "../config/topics.js";
 
-const brokerUrl = "mqtt://mosquitto:1883";
+const brokerUrl = process.env.EDGE_BROKER_URL;
+const options = {
+  username: process.env.EDGE_BROKER_USERNAME,
+  password: process.env.EDGE_BROKER_PASSWORD
+}
 const topic = MQTT_TOPICS.GAS_INPUT;
 const publishReportsTopic = MQTT_TOPICS.REPORT_OUTPUT;
 
-const client = mqtt.connect(brokerUrl);
+const client = mqtt.connect(brokerUrl, options);
 
 export function publishReport(report) {
   client.publish(publishReportsTopic, JSON.stringify(report), { qos: 1 }, err => {

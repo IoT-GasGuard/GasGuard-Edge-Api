@@ -8,5 +8,5 @@ export const STOMP_TOPICS = {
 };
 
 export const WEBSOCKET = {
-  SPRING_URL: "ws://ggapispring:8080/ws/monitoring"
+  SPRING_URL: process.env.EDGE_WS_URL
 };

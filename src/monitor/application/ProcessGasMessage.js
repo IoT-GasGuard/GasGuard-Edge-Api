@@ -7,12 +7,12 @@ const activeAlerts = new Map();
 
 export async function processGasMessage(json, publishReport) {
   const { deviceId, status, ppm } = json;
-  
-  const protocols = []
-  if(status==="WARNING"){
-    protocols=[1]
-  }else if(status==="ALERT"){
-    protocols=[1,2,3]
+
+  let protocols = []
+  if (status === "WARNING") {
+    protocols = [1]
+  } else if (status === "ALERT") {
+    protocols = [1, 2, 3]
   }
 
   const now = Date.now();
@@ -26,7 +26,9 @@ export async function processGasMessage(json, publishReport) {
     } else {
       const session = activeAlerts.get(deviceId);
       session.updateLevel(value);
-      session.updateProtocols(protocols);
+      if (protocols.length > session.protocols.length) {
+        session.updateProtocols(protocols);
+      }
     }
   }
 
