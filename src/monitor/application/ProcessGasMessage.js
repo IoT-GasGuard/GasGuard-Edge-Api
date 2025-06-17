@@ -6,7 +6,15 @@ import { AlertSession } from "../domain/models/AlertSession.js";
 const activeAlerts = new Map();
 
 export async function processGasMessage(json, publishReport) {
-  const { deviceId, status, ppm, protocols } = json;
+  const { deviceId, status, ppm } = json;
+  
+  const protocols = []
+  if(status==="WARNING"){
+    protocols=[1]
+  }else if(status==="ALERT"){
+    protocols=[1,2,3]
+  }
+
   const now = Date.now();
   const value = Number((ppm * 71).toFixed(2));
 
