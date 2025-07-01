@@ -19,6 +19,19 @@ export function publishReport(report) {
   });
 }
 
+export function publishLightingCommand(deviceId, automatic, value = 0) {
+  const payload = automatic
+    ? { auto: 1 }
+    : { auto: 0, value: value };
+
+  const topic = `gg/led/${deviceId}/light`;
+
+  client.publish(topic, JSON.stringify(payload), { qos: 1 }, err => {
+    if (err) console.error("Error al enviar comando de luz:", err);
+    else console.log(`Comando de luz publicado a ${topic}:`, payload);
+  });
+}
+
 client.on("connect", () => {
   console.log("Conectado a MQTT");
   client.subscribe(topic, err => {
